@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京甫企業庫存查補單系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-3">
+    <div class="container bg-white p-4 rounded shadow-sm" style="max-width: 600px;">
+        <h3 class="text-primary mb-3 text-center">📦 庫存查補單系統</h3>
+        
+        <div class="mb-3">
+            <label class="form-label font-weight-bold">客戶名稱</label>
+            <input type="text" id="custName" class="form-control" placeholder="請輸入客戶名稱">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">搜尋商品</label>
+            <div class="input-group">
+                <input type="text" id="searchKey" class="form-control" placeholder="商品名稱或條碼">
+                <button class="btn btn-primary" onclick="searchProduct()">搜尋</button>
+            </div>
+        </div>
+
+        <ul id="productList" class="list-group mb-3"></ul>
+
+        <button class="btn btn-success w-100 py-2" onclick="submitOrder()">💾 儲存並送出單據</button>
+    </div>
+
+    <script>
+        async function searchProduct() {
+            const key = document.getElementById('searchKey').value;
+            const res = await fetch(`/api/products?keyword=${key}`);
+            const data = await res.json();
+            
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            if(!data || data.length === 0) {
+                list.innerHTML = '<li class="list-group-item text-muted">查無商品（請先至 Supabase 填入商品資料）</li>';
+                return;
+            }
+            data.forEach(p => {
+                list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${p.name} (${p.code}) - $${p.price}
+                    <button class="btn btn-sm btn-outline-primary" onclick="alert('已選取 ${p.name}')">選取</button>
+                </li>`;
+            });
+        }
+
+        async function submitOrder() {
+            const custName = document.getElementById('custName').value;
+            if(!custName) return alert('請輸入客戶名稱');
+            
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ customer_name: custName })
+            });
+            if(res.ok) alert('單據已成功上傳雲端！');
+        }
+    </script>
+</body>
+</html>
