@@ -1,10 +1,3 @@
 fastapi
 uvicorn
 supabase
-gotrue
-postgrest
-realtime
-storage3
-supafunc
-httpx
-pydantic
