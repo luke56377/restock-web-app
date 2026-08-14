@@ -14,13 +14,13 @@ async def search_products(keyword: str = ""):
     
     headers = {
         "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Authorization": "Bearer " + SUPABASE_KEY,
         "Content-Type": "application/json"
     }
     
-    url = f"{SUPABASE_URL}/rest/v1/products?select=*"
+    url = SUPABASE_URL + "/rest/v1/products?select=*"
     if keyword:
-        url += f"&or=(code.ilike.*{keyword}*,name.ilike.*{keyword}*)"
+        url += "&or=(code.ilike.*" + keyword + "*,name.ilike.*" + keyword + "*)"
         
     async with httpx.AsyncClient() as client:
         try:
@@ -38,12 +38,12 @@ async def create_order(data: dict):
         
     headers = {
         "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Authorization": "Bearer " + SUPABASE_KEY,
         "Content-Type": "application/json",
         "Prefer": "return=representation"
     }
     
-    url = f"{SUPABASE_URL}/rest/v1/orders"
+    url = SUPABASE_URL + "/rest/v1/orders"
     
     async with httpx.AsyncClient() as client:
         try:
@@ -54,4 +54,4 @@ async def create_order(data: dict):
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-# Vercel 預設尋找 app 變數
+app = app
