@@ -4,7 +4,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-# 讀取環境變數
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 
@@ -30,7 +29,6 @@ async def search_products(keyword: str = ""):
                 return res.json()
             return []
         except Exception as e:
-            print(f"Query error: {e}")
             return []
 
 @app.post("/api/orders")
@@ -56,4 +54,4 @@ async def create_order(data: dict):
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
-handler = app
+# Vercel 預設尋找 app 變數
